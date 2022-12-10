@@ -1,3 +1,4 @@
 /data/*.dot
 /data/address/*.json
 /data/transaction/*.json
+apikey.txt
