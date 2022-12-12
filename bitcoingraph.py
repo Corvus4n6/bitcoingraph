@@ -61,7 +61,7 @@ def netjson(type, hash, apikey):
         txdict = txreqjson['data'][txhash]
         return txdict
 
-def graphaddress(seedaddress, apikey, timefield, netstate):
+def graphaddress(seedaddress, apikey, timefield, valopts, netstate):
     z = 0
     i = 0
     # fetch address info
@@ -117,12 +117,23 @@ def graphaddress(seedaddress, apikey, timefield, netstate):
                     addresslist.append(item['recipient'])
 
             for target in txdict['outputs']:
-                if timefield == 'full':
-                    timevar = target['time']
-                elif timefield == 'date':
-                    timevar = target['date']
+                if 'btc' in valopts:
+                    btcval = '\\n' + 'BTC' + str(target['value'] / 10000000) + " / "
                 else:
-                    timevar = ''
+                    btcval = '\\n'
+                if 'usd' in valopts:
+                    usdval = 'USD' + str(target['value_usd'])
+                else:
+                    usdval = ''
+                valstr = btcval + usdval
+                valstr = valstr.rstrip(' / ')
+
+                if timefield == 'full':
+                    timevar = target['time'] + valstr
+                elif timefield == 'date':
+                    timevar = target['date'] + valstr
+                else:
+                    timevar = valstr.lstrip('\\n')
                 recipientlist.append([target['recipient'],timevar])
                 if target['recipient'] not in addresslist:
                     addresslist.append(target['recipient'])
@@ -155,6 +166,8 @@ arghelpdesc = 'Bitcoin Transaction Grapher'
 parser = argparse.ArgumentParser(description=arghelpdesc)
 parser.add_argument('-t', '--time', help='Add full transaction timestamps to each arrow on the graph.', action='store_true')
 parser.add_argument('-d', '--date', help='Add date-only transaction timestamps to each arrow on the graph.', action='store_true')
+parser.add_argument('-btc', '--valuebtc', help='Add transaction value in BTC to each arrow on the graph.', action='store_true')
+parser.add_argument('-usd', '--valueusd', help='Add transaction value in USD to each arrow on the graph.', action='store_true')
 parser.add_argument('-f', '--file', help='File to read addresses from. One address per line.', nargs=1)
 parser.add_argument('-l', '--local', help='Attempt to find information in local data folders before making API calls.', action='store_true')
 parser.add_argument('-o', '--offline', help='Only work from information saved in local data folders. No API calls will be made.', action='store_true')
@@ -168,6 +181,12 @@ if args.time and args.date:
     sys.exit('ERROR: Options --time and --date are mutually exclusive.')
 if args.local and args.offline:
     sys.exit('ERROR: Options --local and --local-only are mutually exclusive.')
+
+valopts = []
+if args.valuebtc:
+    valopts.append('btc')
+if args.valueusd:
+    valopts.append('usd')
 
 reporttime = datetime.now().strftime('%Y%m%d_%H%M%S')
 
@@ -231,7 +250,7 @@ if len(targetlist) == 0:
     sys.exit('usage: bitcoingraph.py [--help] [--time] [--date] [--file FILE] [--local] [--offline] [--truncate] [--highlight] [address] [address...]')
 
 for seedaddress in targetlist:
-    graphaddress(seedaddress, apikey, timefield, netstate)
+    graphaddress(seedaddress, apikey, timefield, valopts, netstate)
 
 # concatenate all address graphs into a single graph and/or truncate
 if len(targetlist) > 1 or args.truncate:
