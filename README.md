@@ -7,8 +7,8 @@ This code makes requests to the Blockchair API, which requires a key for access.
 
 ## Usage
 ```yaml
-usage: bitcoingraph.py [-h] [-t] [-d] [-btc] [-usd] [-f FILE] [-l] [-o] [--truncate] [--highlight]
-                       [address] [address] ...
+usage: bitcoingraph.py [-h] [-t] [-d] [-btc] [-usd] [-f FILE] [-l] [-o] [--truncate]
+                       [--highlight] [address] [address] ...
 
 positional arguments:
   address               One or more target address(es) to graph.
