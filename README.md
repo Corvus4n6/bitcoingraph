@@ -20,8 +20,8 @@ options:
   -btc, --valuebtc      Add transaction value in BTC to each arrow on the graph.
   -usd, --valueusd      Add transaction value in USD to each arrow on the graph.
   -f FILE, --file FILE  File to read addresses from. One address per line.
-  -l, --local           Attempt to find information in local data folders before making API calls.
-  -o, --offline         Only work from information saved in local data folders. No API calls will
+  -l, --local           Attempt to find information in local cache before making API calls.
+  -o, --offline         Only work from information saved in local cache. No API calls will
                         be made.
   --truncate            Truncate Graphviz data to only include transactions with the target
                         address(es).
