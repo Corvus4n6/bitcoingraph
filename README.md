@@ -7,8 +7,8 @@ This code makes requests to the Blockchair API, which requires a key for access.
 
 ## Usage
 ```yaml
-usage: bitcoingraph.py [-h] [-t] [-d] [-btc] [-usd] [-f FILE] [-l] [-o] [--truncate]
-                       [--highlight] [address] [address] ...
+bitcoingraph.py [-h] [-t] [-d] [-btc] [-usd] [-f FILE] [-l] [-o] [--truncate] [--highlight]
+                        [address] [address] ...
 
 positional arguments:
   address               One or more target address(es) to graph.
@@ -29,6 +29,6 @@ options:
 ```
 
 ## Example Graph
-The example graph below is a truncated graph showing all Bitcoin addresses that made transactions with address 3L2Uyh1eHpfPyPayqrh5WjfnTzWiG4xPLu with the timestamp, value, and highlight options enabled. A full (non-truncated) graph generated for this address is significantly larger.
+The example graph below is a truncated graph showing all Bitcoin addresses that made transactions with address 3L2Uyh1eHpfPyPayqrh5WjfnTzWiG4xPLu with all timestamp, value, and highlight options enabled. A full (non-truncated) graph generated for this address is significantly larger.
 
 ![Example graph](example.png)

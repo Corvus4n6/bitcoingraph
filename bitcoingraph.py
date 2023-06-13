@@ -1,4 +1,4 @@
-# Copyright (c) 2022, J-Michael Roberts, Corvus Forensics
+# Copyright (c) 2022-2023, J-Michael Roberts, Corvus Forensics
 # All rights reserved.
 # This source code is licensed under the BSD-style license found in the
 # LICENSE file in the root directory of this source tree.
@@ -77,6 +77,9 @@ def graphaddress(seedaddress, apikey, timefield, valopts, netstate):
     else:
         addrdict = netjson('address', seedaddress, apikey)
 
+    if addrdict['address']['transaction_count'] == 0:
+        print('Address', seedaddress, 'has no transactions.')
+        return
 
     graphvizlines = []
     addresslist = []
