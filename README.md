@@ -3,7 +3,7 @@
 ## Description
 Simple python code that performs lookups of Bitcoin transactions for a given address and generates Graphviz DOT graph data files to help visualize Bitcoin transactions for humans. It was inspired by Kevin Perlow's code released at the 2017 SANS DFIR summit and available at [https://github.com/kevinperlow/SANS-DFIR-2017](https://github.com/kevinperlow/SANS-DFIR-2017)
 
-This code makes requests to the Blockchair API, which requires a key for access. You can get a key for cheap at [https://blockchair.com/api/](https://blockchair.com/api/)
+This code makes requests to the Blockchair API, which requires a key for access. You can get a key for cheap at [https://blockchair.com/api/](https://blockchair.com/api/) or [https://api.blockchair.com/premium](https://api.blockchair.com/premium)
 
 ## Usage
 ```yaml
