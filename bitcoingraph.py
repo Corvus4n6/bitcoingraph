@@ -49,6 +49,8 @@ def netjson(type, hash, apikey):
         adendpoint = 'https://api.blockchair.com/bitcoin/dashboards/address/'
         reqbase = adendpoint + hash
         reqjson = (requests.get(reqbase+apikeyval)).json()
+        if reqjson['context']['code'] == 432:
+            sys.exit(reqjson['context']['error'])
         writesource(hash, reqjson, 'a')
         addrdict = reqjson['data'][hash]
         return addrdict
@@ -57,6 +59,8 @@ def netjson(type, hash, apikey):
         txhash = hash
         txreqbase = txendpoint + txhash
         txreqjson = (requests.get(txreqbase+apikeyval)).json()
+        if txreqjson['context']['code'] == 432:
+            sys.exit(txreqjson['context']['error'])
         writesource(txhash, txreqjson, 't')
         txdict = txreqjson['data'][txhash]
         return txdict
