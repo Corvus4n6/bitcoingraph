@@ -40,7 +40,12 @@ def localjson(type, hash):
             jsondata = json.load(locjson)
     except FileNotFoundError:
         return False
-    return jsondata
+    if type == 'address':
+        return jsondata
+    elif type == 'transaction':
+        return jsondata['data'][hash]
+    else:
+        return False
 
 def netjson(type, hash, apikey):
     # pull json data from the internet
@@ -116,7 +121,16 @@ def graphaddress(seedaddress, apikey, timefield, valopts, netstate):
 
             # fetch the transaction info
             print('Transaction: ' + transaction)
-            txdict = netjson('transaction', transaction, apikey)
+            if netstate < 2:
+                # attempt to read from files first
+                txdict = localjson('transaction', transaction)
+                if txdict == False and netstate > 0:
+                    txdict = netjson('transaction', transaction, apikey)
+                elif txdict == False and netstate == 0:
+                    # make this a warning?
+                    sys.exit('Local data for transaction ' + transaction + ' unavailable.')
+            else:
+                txdict = netjson('transaction', transaction, apikey)
 
             for item in txdict['inputs']:
                 payerlist.append(item['recipient'])
@@ -187,7 +201,7 @@ args = parser.parse_args()
 if args.time and args.date:
     sys.exit('ERROR: Options --time and --date are mutually exclusive.')
 if args.local and args.offline:
-    sys.exit('ERROR: Options --local and --local-only are mutually exclusive.')
+    sys.exit('ERROR: Options --local and --offline are mutually exclusive.')
 
 valopts = []
 if args.valuebtc:
@@ -271,18 +285,22 @@ if len(targetlist) > 1 or args.truncate:
             g.write('}\n')
         g.write('rankdir=LR;\n')
         for address in targetlist:
-            with open('data/'+address+'.dot', 'r') as h:
-                lines = h.readlines()
-            for line in lines:
-                if args.truncate:
-                    # only keep transactions with targetlist
-                    txpts = re.findall('[0-9a-zA-Z]+', line)
-                    if len(txpts) < 2:
-                        continue
-                    elif txpts[0] not in targetlist and txpts[1] not in targetlist:
-                        continue
-                if ' -> ' in line and line not in alltx:
-                    alltx.append(line)
+            try:
+                with open('data/'+address+'.dot', 'r') as h:
+                    lines = h.readlines()
+                for line in lines:
+                    if args.truncate:
+                        # only keep transactions with targetlist
+                        txpts = re.findall('[0-9a-zA-Z]+', line)
+                        if len(txpts) < 2:
+                            continue
+                        elif txpts[0] not in targetlist and txpts[1] not in targetlist:
+                            continue
+                    if ' -> ' in line and line not in alltx:
+                        alltx.append(line)
+            except:
+                # catching errors that come up when wallets have no transactions
+                pass
         for txline in alltx:
             g.write(txline)
         g.write('}')
